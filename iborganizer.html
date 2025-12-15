@@ -1,0 +1,1613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title></title>
+<style>
+  :root{
+    --bg:#0b1220;
+    --panel:#0f1a2b;
+    --panel2:#0c1626;
+    --border:rgba(255,255,255,.10);
+    --text:#e7eefc;
+    --muted:rgba(231,238,252,.72);
+
+    --primary:#4f46e5;
+    --primary2:#7c3aed;
+    --good:#22c55e;
+    --danger:#ef4444;
+
+    --rowHover:rgba(255,255,255,.05);
+    --missingBg:rgba(239,68,68,.18);
+    --doneBg:rgba(255,255,255,.03);
+
+    --hlMay: rgba(56,189,248,.26);
+    --slMay: rgba(56,189,248,.06);
+    --hlNov: rgba(249,115,22,.28);
+    --slNov: rgba(249,115,22,.11);
+
+    --p1-bg: rgba(56,189,248,.18);
+    --p1ab-bg: rgba(56,189,248,.10);
+    --p2-bg: rgba(34,197,94,.18);
+    --p3-bg: rgba(124,58,237,.18);
+
+    --btn:#2b3a5a;
+    --btnHover:#344a73;
+    --link:#93c5fd;
+  }
+
+  [data-theme="light"]{
+    --bg:#f6f7fb;
+    --panel:#ffffff;
+    --panel2:#f2f4fb;
+    --border:rgba(0,0,0,.10);
+    --text:#0f172a;
+    --muted:rgba(15,23,42,.70);
+
+    --primary:#4f46e5;
+    --primary2:#6d28d9;
+    --good:#16a34a;
+    --danger:#dc2626;
+
+    --rowHover:rgba(15,23,42,.04);
+    --missingBg:rgba(220,38,38,.10);
+    --doneBg:rgba(15,23,42,.03);
+
+    --hlMay: rgba(8,145,178,.18);
+    --slMay: rgba(8,145,178,.05);
+    --hlNov: rgba(194,65,12,.20);
+    --slNov: rgba(194,65,12,.10);
+
+    --p1-bg: rgba(8,145,178,.12);
+    --p1ab-bg: rgba(8,145,178,.07);
+    --p2-bg: rgba(22,163,74,.12);
+    --p3-bg: rgba(109,40,217,.12);
+
+    --btn:#e8ecf7;
+    --btnHover:#dfe6fb;
+    --link:#1d4ed8;
+  }
+
+  body{
+    font:15px "Segoe UI",sans-serif; /* bigger text overall */
+    background:var(--bg);
+    color:var(--text);
+    margin:16px auto;
+    max-width:1420px;
+  }
+
+  #bar{
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    flex-wrap:wrap;
+    margin-bottom:10px;
+    align-items:center;
+    position:relative;
+  }
+
+  button,select,input[type=text],textarea{
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:8px 12px;
+    font-size:13px;
+    background:var(--panel2);
+    color:var(--text);
+    outline:none;
+    box-sizing:border-box;
+  }
+
+  button{
+    cursor:pointer;
+    background:var(--primary);
+    border-color:transparent;
+    color:white;
+  }
+  button:hover{ filter:brightness(1.06); }
+
+  .btnGhost{
+    background:var(--btn);
+    border-color:var(--border);
+    color:var(--text);
+  }
+  .btnGhost:hover{ background:var(--btnHover); }
+
+  .btnDanger{ background:var(--danger); }
+  .btnDanger:hover{ filter:brightness(1.06); }
+
+  a{ color:var(--link); text-decoration:none }
+  a:hover{ text-decoration:underline }
+
+  .panelWrap{ display:none; max-width:1420px; margin:0 auto 10px; }
+  .panel{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:12px;
+    display:grid;
+    grid-template-columns:repeat(3,minmax(300px,1fr));
+    gap:10px;
+  }
+  .group{
+    background:var(--panel2);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:10px;
+  }
+  .group h3{ margin:0 0 8px; font-size:13px; letter-spacing:.2px; }
+  .note{ font-size:12px; opacity:.9; line-height:1.35; color:var(--muted); }
+
+  .checklist{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+    max-height:260px;
+    overflow:auto;
+    padding-right:6px;
+  }
+  .item{ display:flex; gap:8px; align-items:center }
+  .item label{ cursor:pointer }
+  input[type=checkbox], input[type=radio]{ transform:scale(1.05); accent-color:var(--primary2); }
+  .footerRow{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-top:8px }
+
+  /* ===== TABLE: smaller row height + larger text ===== */
+  table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:14px;            /* bigger text in table */
+    border-radius:16px;
+    overflow:hidden;
+    border:1px solid var(--border);
+    background:var(--panel);
+  }
+  th,td{
+    padding:7px 10px;          /* smaller row height */
+    border-bottom:1px solid var(--border);
+    text-align:left;
+    vertical-align:middle;
+    line-height:1.15;
+  }
+  th{
+    color:var(--good);
+    font-weight:900;
+    background:linear-gradient(to bottom, rgba(255,255,255,.02), transparent);
+    font-size:13px;
+    padding:9px 10px;
+  }
+  th.compact, td.compact{ white-space:nowrap }
+  tbody tr:hover td{ background:var(--rowHover); }
+
+  .yearhead{
+    background:var(--panel2);
+    font-weight:900;
+    color:var(--good);
+    padding:8px 10px !important;
+  }
+
+  .hlMay{ background:var(--hlMay); }
+  .slMay{ background:var(--slMay); }
+  .hlNov{ background:var(--hlNov); }
+  .slNov{ background:var(--slNov); }
+
+  .missingRow{ background:var(--missingBg); }
+  .doneRow{ background:var(--doneBg) !important; color:var(--muted); }
+
+  .small{ font-size:12px; color:var(--muted); }
+
+  .pill{
+    border:1px solid var(--border);
+    border-radius:999px;
+    padding:3px 9px;
+    font-size:12px;
+    font-weight:900;
+    display:inline-flex;
+    align-items:center;
+  }
+  .pill.p1{ background:var(--p1-bg); }
+  .pill.p1a,.pill.p1b{ background:var(--p1ab-bg); }
+  .pill.p2{ background:var(--p2-bg); }
+  .pill.p3{ background:var(--p3-bg); }
+
+  .missTxt{ color:var(--danger); font-weight:900 }
+
+  .progCell{ display:flex; align-items:center; justify-content:center; }
+  .progStack{ display:flex; flex-direction:column; justify-content:center; gap:6px; width:150px; }
+  .statRail{
+    display:flex;
+    border:1px solid var(--border);
+    border-radius:14px;
+    overflow:hidden;
+    background:rgba(255,255,255,.02);
+    height:40px; /* smaller */
+  }
+  .statBtn{
+    flex:1;
+    padding:0;
+    background:transparent;
+    border:none;
+    color:var(--muted);
+    cursor:pointer;
+    font-weight:900;
+    font-size:15px;
+  }
+  .statBtn:hover{ background:var(--rowHover); }
+  .statBtn.active{
+    background:color-mix(in srgb, var(--primary) 38%, transparent);
+    color:var(--text);
+  }
+  .notesBtn{
+    background:var(--btn);
+    border:1px solid var(--border);
+    color:var(--text);
+    border-radius:12px;
+    padding:8px 10px;
+    cursor:pointer;
+    height:40px; /* smaller */
+  }
+  .notesBtn:hover{ background:var(--btnHover); }
+
+  .doneStamp{
+    font-size:11px;
+    color:var(--muted);
+    text-align:center;
+    line-height:1.2;
+    margin-top:-2px;
+    min-height:14px;
+  }
+
+  /* ===== Notes popover: textarea alignment fix ===== */
+  #notePopover{
+    position:fixed;
+    display:none;
+    z-index:120;
+    width:360px;
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:16px;
+    box-shadow:0 18px 50px rgba(0,0,0,.35);
+    padding:10px;
+    box-sizing:border-box;
+  }
+  #notePopover .hdr{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    margin-bottom:8px;
+  }
+  #notePopover textarea{
+    width:100%;
+    min-height:140px;
+    border-radius:14px;
+    box-sizing:border-box;
+    display:block;
+  }
+  #notePopover .actions{
+    display:flex;
+    gap:8px;
+    justify-content:flex-end;
+    margin-top:8px;
+  }
+
+  /* ===== Preview pane (LEFT) ===== */
+  #previewPane{
+    position:fixed;
+    top:58px;
+    left:0;
+    width:44%;
+    height:86%;
+    background:var(--panel);
+    border-right:1px solid var(--border);
+    display:none;
+    z-index:60;
+    border-top-right-radius:16px;
+    border-bottom-right-radius:16px;
+    overflow:hidden;
+    box-shadow:0 18px 60px rgba(0,0,0,.30);
+  }
+  #previewFrame{ width:100%; height:100%; border:none; }
+
+  #themeBtn{
+    position:absolute;
+    right:0;
+    top:0;
+    background:var(--btn);
+    border:1px solid var(--border);
+    color:var(--text);
+  }
+  #themeBtn:hover{ background:var(--btnHover); }
+
+  /* ===== Sort blocks ===== */
+  .sortWrap{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  .sortLabel{ font-size:12px; color:var(--muted); font-weight:900; }
+
+  #sortBlocks{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:flex-start;
+    padding:8px;
+    border:1px dashed var(--border);
+    border-radius:16px;
+    background:rgba(255,255,255,.02);
+    min-height:54px;
+    position:relative;
+  }
+
+  .sblock{
+    user-select:none;
+    cursor:grab;
+    padding:10px 12px;
+    border-radius:14px;
+    border:1px solid var(--border);
+    background:linear-gradient(to bottom, rgba(255,255,255,.06), rgba(255,255,255,.02));
+    font-weight:900;
+    font-size:12px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    will-change:transform;
+    transition:transform 180ms cubic-bezier(.2,.8,.2,1);
+  }
+  .sblock .grip{ opacity:.8; }
+
+  .placeholder{
+    background:transparent !important;
+    border:1px dashed var(--border) !important;
+  }
+
+  .drag-ghost{
+    position:fixed;
+    z-index:500;
+    pointer-events:none;
+    box-shadow:0 18px 60px rgba(0,0,0,.35);
+    border-radius:14px;
+    transform:translate3d(0,0,0) rotate(-1deg) scale(1.04);
+  }
+</style>
+</head>
+<body>
+
+<div id="bar">
+  <input type="text" id="search" placeholder="Search (year / session / tz / level / subject / file / notes)" size="44">
+  <button id="pick">Choose Folder</button>
+  <button id="filtersBtn" class="btnGhost">Filters</button>
+  <button id="rulesBtn" class="btnGhost">Missing Rules</button>
+
+  <div class="sortWrap">
+    <span class="sortLabel">Sort priority (drag):</span>
+    <div id="sortBlocks" aria-label="Sort priority"></div>
+  </div>
+
+  <button id="themeBtn" title="Toggle light/dark">☀︎ / ☾</button>
+</div>
+
+<div id="filtersWrap" class="panelWrap">
+  <div class="panel">
+    <div class="group">
+      <h3>Subjects</h3>
+      <div class="checklist" id="subjectsList"></div>
+      <div class="footerRow">
+        <button id="subAll" class="btnGhost">Select all</button>
+        <button id="subNone" class="btnGhost">Select none</button>
+      </div>
+      <div class="note">If any filter section is empty, nothing is shown.</div>
+    </div>
+
+    <div class="group">
+      <h3>Session / Level / TZ / Papers</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div>
+          <div class="small" style="margin-bottom:6px">Session</div>
+          <div class="checklist" id="sessionsList"></div>
+          <div class="footerRow">
+            <button id="sesAll" class="btnGhost">All</button>
+            <button id="sesNone" class="btnGhost">None</button>
+          </div>
+        </div>
+        <div>
+          <div class="small" style="margin-bottom:6px">Level</div>
+          <div class="checklist" id="levelsList"></div>
+          <div class="footerRow">
+            <button id="lvlAll" class="btnGhost">All</button>
+            <button id="lvlNone" class="btnGhost">None</button>
+          </div>
+        </div>
+        <div>
+          <div class="small" style="margin-bottom:6px">Timezone</div>
+          <div class="checklist" id="tzList"></div>
+          <div class="footerRow">
+            <button id="tzAll" class="btnGhost">All</button>
+            <button id="tzNone" class="btnGhost">None</button>
+          </div>
+        </div>
+        <div>
+          <div class="small" style="margin-bottom:6px">Papers</div>
+          <div class="checklist" id="papersList"></div>
+          <div class="footerRow">
+            <button id="papAll" class="btnGhost">All</button>
+            <button id="papNone" class="btnGhost">None</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="group">
+      <h3>Availability + Progress</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div>
+          <div class="small" style="margin-bottom:6px">Availability</div>
+          <div class="checklist" id="availList"></div>
+        </div>
+        <div>
+          <div class="small" style="margin-bottom:6px">Progress</div>
+          <div class="checklist" id="statusList"></div>
+        </div>
+      </div>
+      <div class="footerRow">
+        <button id="downloadProgress" class="btnGhost">Download progress</button>
+        <button id="importProgressFile" class="btnGhost">Import progress</button>
+        <button id="resetProgress" class="btnDanger">Reset progress</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="rulesWrap" class="panelWrap">
+  <div class="panel">
+    <div class="group" style="grid-column:1 / -1">
+      <h3>Missing Rules</h3>
+      <div class="note">Rules decide what is expected.</div>
+    </div>
+
+    <div class="group" style="grid-column:1 / 3">
+      <h3>Create Rule</h3>
+      <div class="footerRow" style="margin-top:0">
+        <select id="ruleType">
+          <option value="disable">Disable combination</option>
+          <option value="enableP1ab">Enable combination (P1a/P1b)</option>
+        </select>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:10px">
+        <div>
+          <div class="small" style="margin-bottom:6px">Subjects</div>
+          <div class="checklist" id="ruleSubjects"></div>
+          <div class="footerRow">
+            <button id="rsAll" class="btnGhost">Select all</button>
+            <button id="rsNone" class="btnGhost">Select none</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="small" style="margin-bottom:6px">Years</div>
+          <div class="checklist" id="ruleYears"></div>
+          <div class="footerRow">
+            <button id="ryAll" class="btnGhost">Select all</button>
+            <button id="ryNone" class="btnGhost">Select none</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="small" style="margin-bottom:6px">Papers</div>
+          <div class="checklist" id="rulePapers"></div>
+          <div class="footerRow">
+            <button id="rpAll" class="btnGhost">Select all</button>
+            <button id="rpNone" class="btnGhost">Select none</button>
+          </div>
+
+          <div style="margin-top:10px">
+            <div class="small" style="margin-bottom:6px">Level</div>
+            <div class="checklist" id="ruleLevels"></div>
+          </div>
+          <div style="margin-top:10px">
+            <div class="small" style="margin-bottom:6px">Timezone</div>
+            <div class="checklist" id="ruleTZ"></div>
+          </div>
+          <div style="margin-top:10px">
+            <div class="small" style="margin-bottom:6px">Session</div>
+            <div class="checklist" id="ruleSessions"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footerRow" style="margin-top:12px">
+        <button id="clearRuleConfig" class="btnGhost">Clear all</button>
+        <button id="selectAllRuleConfig" class="btnGhost">Select all</button>
+      </div>
+
+      <div class="footerRow" style="margin-top:10px">
+        <button id="addRule">Add rule</button>
+      </div>
+    </div>
+
+    <div class="group" style="grid-column:3 / 4">
+      <h3>Current Rules</h3>
+      <div id="rulesList" class="checklist"></div>
+      <div class="footerRow">
+        <button id="clearRules" class="btnDanger">Clear all rules</button>
+      </div>
+
+      <div style="margin-top:10px">
+        <h3 style="margin:0 0 8px">Rules Export / Import</h3>
+        <textarea id="rulesJson" readonly style="min-height:140px"></textarea>
+        <div class="footerRow">
+          <button id="updateRulesJson" class="btnGhost">Update JSON</button>
+          <button id="downloadRules" class="btnGhost">Download rules</button>
+          <button id="importRulesFile" class="btnGhost">Import rules</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<table id="tbl">
+<thead>
+<tr>
+  <th class="compact" style="width:70px">Year</th>
+  <th class="compact" style="width:70px">Session</th>
+  <th class="compact" style="width:220px">Subject</th>
+  <th class="compact" style="width:60px">Lvl</th>
+  <th class="compact" style="width:45px">TZ</th>
+  <th class="compact" style="width:70px">Paper</th>
+  <th>Question paper</th>
+  <th>Markscheme</th>
+  <th class="compact" style="width:170px;text-align:center">Progress</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+
+<div id="previewPane">
+  <iframe id="previewFrame"></iframe>
+</div>
+
+<div id="notePopover" role="dialog" aria-modal="false">
+  <div class="hdr">
+    <div class="title" style="font-weight:900;font-size:13px">Notes</div>
+    <button id="noteClose" class="btnGhost" style="padding:6px 10px;border-radius:12px">Close</button>
+  </div>
+  <div class="small" style="margin-bottom:8px">Completed questions (e.g. 1, 2a, 3b):</div>
+  <textarea id="noteText"></textarea>
+  <div class="actions">
+    <button id="noteSave" class="btnGhost">Save</button>
+  </div>
+</div>
+
+<input type="file" id="rulesFile" accept=".json,.txt" style="display:none">
+<input type="file" id="progressFile" accept=".json,.txt" style="display:none">
+
+<script>
+window.addEventListener("DOMContentLoaded",()=>{
+
+/* ===== SUBJECTS ===== */
+const SUBJECTS = [
+  {code:"CH", name:"Chemistry"},
+  {code:"EC", name:"Economics"},
+  {code:"EN", name:"English Lit A"},
+  {code:"GE", name:"Geography"},
+  {code:"KO", name:"Korean A"},
+  {code:"MB", name:"Mandarin B"},
+  {code:"MA", name:"Math"},
+  {code:"PH", name:"Physics"},
+  {code:"SP", name:"Spanish AB"},
+];
+const SCIENCE_SUBJECTS = new Set(["PH","CH","BI"]);
+
+const PAPER_OPTIONS = ["P1","P1a","P1b","P2","P3"];
+const LEVEL_OPTIONS = ["HL","SL"];
+const SESSION_OPTIONS = ["May","Nov"];
+const TZ_OPTIONS = ["1","2","3"];
+const AVAIL_OPTIONS = [
+  {k:"availableOnly", t:"Available only"},
+  {k:"missingAny", t:"Missing anything"},
+  {k:"missingQP", t:"Missing QP"},
+  {k:"missingMS", t:"Missing MS"},
+  {k:"all", t:"All"},
+];
+const expectedYears = Array.from({length:10},(_,i)=>2016+i);
+
+function tzList(year, session){
+  if(session==="Nov") return (year===2025 ? [1,2,3] : [1,2]);
+  return [1,2,3];
+}
+function basePapers(){ return ["P1","P2","P3"]; }
+
+/* ===== Storage keys ===== */
+const progressKey = "ib_checklist_v29_progress";
+const rulesKey    = "ib_checklist_v29_rules";
+const themeKey    = "ib_checklist_theme";
+const sortKey     = "ib_checklist_sort_priority";
+
+/* ===== Theme ===== */
+function setTheme(t){
+  document.documentElement.setAttribute("data-theme", t);
+  localStorage.setItem(themeKey, t);
+}
+setTheme(localStorage.getItem(themeKey) || "dark");
+document.getElementById("themeBtn").onclick=()=>{
+  const cur = document.documentElement.getAttribute("data-theme") || "dark";
+  setTheme(cur==="dark" ? "light" : "dark");
+};
+
+/* ===== Default rules (your JSON, no tz none) ===== */
+const DEFAULT_RULES = [
+  {"type":"disable","subjects":["CH","EC","EN","GE","KO","MB","MA","PH","SP"],"papers":["P1","P1a","P1b","P2","P3"],"years":[2020],"sessions":["M","N"],"levels":["HL","SL"],"tz":["1","2","3"]},
+  {"type":"disable","subjects":["PH"],"papers":["P1","P1a","P1b","P2","P3"],"years":[2016,2017,2018,2019,2020,2021,2022,2023,2024],"sessions":["M","N"],"levels":["HL","SL"],"tz":["3"]},
+  {"type":"enableP1ab","subjects":["CH","PH"],"years":[2025]},
+  {"type":"enableP1ab","subjects":["EN","KO"],"years":[2016,2017,2018,2019,2020,2021,2022,2023,2024,2025]},
+  {"type":"disable","subjects":["PH"],"papers":["P3","P1"],"years":[2025],"sessions":["M","N"],"levels":["HL","SL"],"tz":["1","2","3"]}
+];
+
+function sanitizeRules(arr){
+  return arr.map(r=>{
+    const x={...r};
+    if(x.tz && Array.isArray(x.tz)) x.tz = x.tz.filter(v=>v!=="none");
+    return x;
+  });
+}
+
+/* ===== Progress ===== */
+let progress = JSON.parse(localStorage.getItem(progressKey)||"{}");
+function getProg(id){ return progress[id] || {status:"todo", notes:"", completedAt:null}; }
+function setProg(id, patch){
+  const cur=getProg(id);
+  progress[id] = {...cur, ...patch};
+  localStorage.setItem(progressKey, JSON.stringify(progress));
+}
+function nowIsoMinute(){
+  const d = new Date();
+  d.setSeconds(0,0);
+  return d.toISOString();
+}
+function fmtDoneStamp(iso){
+  if(!iso) return "";
+  const d = new Date(iso);
+  const y=d.getFullYear();
+  const mo=String(d.getMonth()+1).padStart(2,"0");
+  const da=String(d.getDate()).padStart(2,"0");
+  const hh=String(d.getHours()).padStart(2,"0");
+  const mm=String(d.getMinutes()).padStart(2,"0");
+  return `${y}-${mo}-${da} ${hh}:${mm}`;
+}
+
+/* ===== Rules ===== */
+let rules = loadRules();
+if(rules.length===0){
+  rules = structuredClone(DEFAULT_RULES);
+  saveRules();
+}
+function loadRules(){
+  try{
+    const v = JSON.parse(localStorage.getItem(rulesKey) || "[]");
+    if(Array.isArray(v)) return sanitizeRules(v);
+    return [];
+  }catch{ return []; }
+}
+function saveRules(){ localStorage.setItem(rulesKey, JSON.stringify(rules)); }
+function matchesRule(rule, meta){
+  if(rule.subjects?.length && !rule.subjects.includes(meta.subjectCode)) return false;
+  if(rule.papers?.length && !rule.papers.includes(meta.paperLabel)) return false;
+  if(rule.years?.length && !rule.years.includes(meta.year)) return false;
+  if(rule.sessions?.length && !rule.sessions.includes(meta.sessionCode)) return false;
+  if(rule.levels?.length && !rule.levels.includes(meta.level)) return false;
+  if(rule.tz?.length && !rule.tz.includes(meta.tz)) return false;
+  return true;
+}
+function isExpected(meta){
+  for(const r of rules){
+    if(r.type==="disable" && matchesRule(r, meta)) return false;
+  }
+  return true;
+}
+function p1abEnabledFor(subjectCode, year){
+  for(const r of rules){
+    if(r.type!=="enableP1ab") continue;
+    const subOk = !r.subjects || r.subjects.length===0 || r.subjects.includes(subjectCode);
+    const yrOk  = !r.years || r.years.length===0 || r.years.includes(year);
+    if(subOk && yrOk) return true;
+  }
+  return false;
+}
+
+/* ===== Parse filenames ===== */
+function parseMeta(filename){
+  const m=/^(MS-)?([A-Z]{2})-(\d{2})([MN])-P([123])([ab])?-([123])-(HL|SL)\.pdf$/i.exec(filename);
+  if(!m) return null;
+  const isMS=!!m[1];
+  const sub=m[2].toUpperCase();
+  const year=2000+(+m[3]);
+  const sess=m[4].toUpperCase();
+  const pnum=m[5];
+  const variant=m[6] ? m[6].toLowerCase() : "";
+  const tz=String(m[7]);
+  const level=m[8].toUpperCase();
+  const subj = SUBJECTS.find(s=>s.code===sub);
+  return{
+    filename, isMS,
+    subjectCode: sub,
+    subjectName: subj ? subj.name : sub,
+    year,
+    session: sess==="M" ? "May" : "Nov",
+    sessionCode: sess,
+    level, tz,
+    paperLabel: `P${pnum}${variant}`,
+  };
+}
+function baseId(meta){
+  return `${meta.subjectCode}-${meta.year}-${meta.sessionCode}-${meta.level}-${meta.paperLabel}-${meta.tz}`;
+}
+function colour(level, session){
+  if(session==="May"&&level==="HL") return "hlMay";
+  if(session==="May"&&level==="SL") return "slMay";
+  if(session==="Nov"&&level==="HL") return "hlNov";
+  if(session==="Nov"&&level==="SL") return "slNov";
+  return "";
+}
+function paperClass(p){
+  if(p==="P1") return "p1";
+  if(p==="P1a") return "p1a";
+  if(p==="P1b") return "p1b";
+  if(p==="P2") return "p2";
+  if(p==="P3") return "p3";
+  return "p1";
+}
+
+/* ===== Expected grid ===== */
+function generateExpected(){
+  const out=[];
+  for(const year of expectedYears){
+    for(const session of ["May","Nov"]){
+      const sessionCode = session==="May" ? "M" : "N";
+      for(const level of LEVEL_OPTIONS){
+        for(const tz of tzList(year, session)){
+          for(const subject of SUBJECTS){
+            const papers = basePapers().slice();
+            if(SCIENCE_SUBJECTS.has(subject.code) && p1abEnabledFor(subject.code, year)){
+              papers.push("P1a","P1b");
+            }
+            for(const paper of papers){
+              const meta = {subjectCode:subject.code,subjectName:subject.name,year,session,sessionCode,level,tz:String(tz),paperLabel:paper};
+              if(isExpected(meta)) out.push(meta);
+            }
+          }
+        }
+      }
+    }
+  }
+  return out;
+}
+
+/* ===== File handling ===== */
+let currentFiles = [];
+const urlCache = new Map();
+function getUrl(file){
+  if(urlCache.has(file)) return urlCache.get(file);
+  const url = URL.createObjectURL(file);
+  urlCache.set(file, url);
+  return url;
+}
+function downloadFile(file){
+  const url = getUrl(file);
+  const base = file.name.replace(/\.pdf$/i,"");
+  const dlName = `${base} (dl).pdf`;
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = dlName;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+async function gatherFilesRecursively(dirHandle, files){
+  for await(const entry of dirHandle.values()){
+    if(entry.kind==="file" && entry.name.toLowerCase().endsWith(".pdf")){
+      try{ files.push(await entry.getFile()); } catch {}
+    } else if(entry.kind==="directory"){
+      await gatherFilesRecursively(entry, files);
+    }
+  }
+}
+function inferSubjectFromFolderName(name){
+  const n=(name||"").toLowerCase();
+  for(const s of SUBJECTS){
+    if(n.includes(s.code.toLowerCase())) return s.code;
+    if(n.includes(s.name.toLowerCase().split(" ")[0])) return s.code;
+    if(n.includes(s.name.toLowerCase())) return s.code;
+  }
+  if(n.includes("physics")) return "PH";
+  if(n.includes("math")) return "MA";
+  if(n.includes("korean")) return "KO";
+  return null;
+}
+function autoSelectDefaults(folderHandle){
+  filters.sessions = new Set(SESSION_OPTIONS);
+  filters.levels = new Set(LEVEL_OPTIONS);
+  filters.tz = new Set(TZ_OPTIONS);
+  filters.papers = new Set(PAPER_OPTIONS);
+  filters.availability = "availableOnly";
+
+  filters.subjects = new Set();
+  const key = inferSubjectFromFolderName(folderHandle?.name || "");
+  if(key) filters.subjects.add(key);
+  else SUBJECTS.forEach(s=>filters.subjects.add(s.code));
+}
+async function pickBase(){
+  try{
+    const base=await showDirectoryPicker();
+    const files=[];
+    await gatherFilesRecursively(base,files);
+    currentFiles=files;
+
+    autoSelectDefaults(base);
+    initFilters();
+    render();
+  }catch(e){
+    alert(e.name+": "+e.message);
+  }
+}
+document.getElementById("pick").onclick=pickBase;
+
+/* ===== Panels ===== */
+const filtersWrap=document.getElementById("filtersWrap");
+const rulesWrap=document.getElementById("rulesWrap");
+function togglePanel(which){
+  const isFiltersOpen = filtersWrap.style.display==="block";
+  const isRulesOpen = rulesWrap.style.display==="block";
+  if(which==="filters"){
+    rulesWrap.style.display="none";
+    filtersWrap.style.display = isFiltersOpen ? "none" : "block";
+  }else{
+    filtersWrap.style.display="none";
+    rulesWrap.style.display = isRulesOpen ? "none" : "block";
+  }
+}
+document.getElementById("filtersBtn").onclick=()=>togglePanel("filters");
+document.getElementById("rulesBtn").onclick=()=>togglePanel("rules");
+
+/* ===== Preview FIXED =====
+   - does NOT close when hovering preview
+   - 0.5s grace
+   - instant close when leaving row
+   - instant swap when entering another link
+*/
+let hideTimer=null;
+let activeRow=null;
+
+function showPreview(url, rowEl){
+  if(hideTimer){ clearTimeout(hideTimer); hideTimer=null; }
+  activeRow=rowEl;
+  const pane=document.getElementById("previewPane");
+  const frame=document.getElementById("previewFrame");
+  frame.src=url;
+  pane.style.display="block";
+}
+function hidePreviewImmediate(){
+  if(hideTimer){ clearTimeout(hideTimer); hideTimer=null; }
+  activeRow=null;
+  document.getElementById("previewPane").style.display="none";
+}
+function hidePreviewSoon(){
+  if(hideTimer) clearTimeout(hideTimer);
+  hideTimer=setTimeout(()=>{
+    const pane=document.getElementById("previewPane");
+    const hoveringPreview = pane.matches(":hover");
+    const hoveringRow = activeRow && activeRow.matches(":hover");
+    if(!hoveringPreview && !hoveringRow) hidePreviewImmediate();
+  }, 500);
+}
+document.getElementById("previewPane").addEventListener("mouseenter", ()=>{
+  if(hideTimer){ clearTimeout(hideTimer); hideTimer=null; }
+});
+document.getElementById("previewPane").addEventListener("mouseleave", hidePreviewSoon);
+
+/* ===== Notes popover ===== */
+const pop=document.getElementById("notePopover");
+const noteText=document.getElementById("noteText");
+let popId=null;
+function openNotePopover(anchorBtn, id){
+  popId=id;
+  noteText.value=getProg(id).notes||"";
+  const r=anchorBtn.getBoundingClientRect();
+  const width=360;
+  const x=Math.max(10, r.left - width - 12);
+  const y=Math.min(window.innerHeight - 240, Math.max(10, r.top - 6));
+  pop.style.left=x+"px";
+  pop.style.top=y+"px";
+  pop.style.display="block";
+}
+function closeNotePopover(){ pop.style.display="none"; popId=null; }
+document.getElementById("noteClose").onclick=closeNotePopover;
+document.getElementById("noteSave").onclick=()=>{
+  if(!popId) return;
+  setProg(popId, {notes: noteText.value});
+  closeNotePopover();
+  render();
+};
+document.addEventListener("mousedown",(e)=>{
+  if(pop.style.display!=="block") return;
+  if(pop.contains(e.target)) return;
+  if(e.target?.classList?.contains("notesBtn")) return;
+  closeNotePopover();
+});
+
+/* ===== Filters ===== */
+let filters = {
+  subjects: new Set(),
+  sessions: new Set(),
+  levels: new Set(),
+  tz: new Set(),
+  papers: new Set(),
+  status: "all",
+  availability: "availableOnly",
+};
+function passesFilters(meta, status, hasQP, hasMS){
+  if(filters.subjects.size===0) return false;
+  if(filters.sessions.size===0) return false;
+  if(filters.levels.size===0) return false;
+  if(filters.tz.size===0) return false;
+  if(filters.papers.size===0) return false;
+
+  if(!filters.subjects.has(meta.subjectCode)) return false;
+  if(!filters.sessions.has(meta.session)) return false;
+  if(!filters.levels.has(meta.level)) return false;
+  if(!filters.tz.has(meta.tz)) return false;
+  if(!filters.papers.has(meta.paperLabel)) return false;
+
+  if(filters.status==="done" && status!=="done") return false;
+  if(filters.status==="undone" && status==="done") return false;
+
+  const mode=filters.availability;
+  if(mode==="availableOnly" && !(hasQP && hasMS)) return false;
+  if(mode==="missingAny" && (hasQP && hasMS)) return false;
+  if(mode==="missingQP" && hasQP) return false;
+  if(mode==="missingMS" && hasMS) return false;
+
+  return true;
+}
+function makeChecklist(containerId, options, setRef, onChange, labelFn){
+  const el=document.getElementById(containerId);
+  el.innerHTML="";
+  options.forEach(opt=>{
+    const id=`${containerId}_${String(opt).replace(/\s+/g,'_')}`;
+    const div=document.createElement("div");
+    div.className="item";
+    div.innerHTML=`
+      <input type="checkbox" id="${id}" data-val="${String(opt)}" ${setRef.has(opt) ? "checked" : ""}>
+      <label for="${id}">${labelFn ? labelFn(opt) : opt}</label>
+    `;
+    const box=div.querySelector("input");
+    box.onchange=()=>onChange(opt, box.checked);
+    el.appendChild(div);
+  });
+}
+function setAll(setRef, options){ setRef.clear(); options.forEach(o=>setRef.add(o)); }
+function setNone(setRef){ setRef.clear(); }
+
+function initFilters(){
+  makeChecklist("subjectsList", SUBJECTS.map(s=>s.code), filters.subjects, (opt,checked)=>{
+    checked ? filters.subjects.add(opt) : filters.subjects.delete(opt);
+    render();
+  }, code=>{
+    const s=SUBJECTS.find(x=>x.code===code);
+    return `${s ? s.name : code} (${code})`;
+  });
+
+  makeChecklist("sessionsList", SESSION_OPTIONS, filters.sessions, (opt,checked)=>{
+    checked ? filters.sessions.add(opt) : filters.sessions.delete(opt);
+    render();
+  });
+  makeChecklist("levelsList", LEVEL_OPTIONS, filters.levels, (opt,checked)=>{
+    checked ? filters.levels.add(opt) : filters.levels.delete(opt);
+    render();
+  });
+  makeChecklist("tzList", TZ_OPTIONS, filters.tz, (opt,checked)=>{
+    checked ? filters.tz.add(opt) : filters.tz.delete(opt);
+    render();
+  }, tz=>`TZ ${tz}`);
+  makeChecklist("papersList", PAPER_OPTIONS, filters.papers, (opt,checked)=>{
+    checked ? filters.papers.add(opt) : filters.papers.delete(opt);
+    render();
+  });
+
+  const availEl=document.getElementById("availList");
+  availEl.innerHTML="";
+  AVAIL_OPTIONS.forEach(o=>{
+    const id=`avail_${o.k}`;
+    const div=document.createElement("div");
+    div.className="item";
+    div.innerHTML=`
+      <input type="radio" name="availability" id="${id}" ${filters.availability===o.k?"checked":""}>
+      <label for="${id}">${o.t}</label>
+    `;
+    div.querySelector("input").onchange=()=>{ filters.availability=o.k; render(); };
+    availEl.appendChild(div);
+  });
+
+  const statusEl=document.getElementById("statusList");
+  statusEl.innerHTML="";
+  const sopts=[{k:"all",t:"All"},{k:"done",t:"Done"},{k:"undone",t:"Not done"}];
+  sopts.forEach(o=>{
+    const id=`status_${o.k}`;
+    const div=document.createElement("div");
+    div.className="item";
+    div.innerHTML=`
+      <input type="radio" name="status" id="${id}" ${filters.status===o.k?"checked":""}>
+      <label for="${id}">${o.t}</label>
+    `;
+    div.querySelector("input").onchange=()=>{filters.status=o.k; render();};
+    statusEl.appendChild(div);
+  });
+
+  document.getElementById("subAll").onclick=()=>{ setAll(filters.subjects, SUBJECTS.map(s=>s.code)); initFilters(); render(); };
+  document.getElementById("subNone").onclick=()=>{ setNone(filters.subjects); initFilters(); render(); };
+
+  document.getElementById("sesAll").onclick=()=>{ setAll(filters.sessions, SESSION_OPTIONS); initFilters(); render(); };
+  document.getElementById("sesNone").onclick=()=>{ setNone(filters.sessions); initFilters(); render(); };
+
+  document.getElementById("lvlAll").onclick=()=>{ setAll(filters.levels, LEVEL_OPTIONS); initFilters(); render(); };
+  document.getElementById("lvlNone").onclick=()=>{ setNone(filters.levels); initFilters(); render(); };
+
+  document.getElementById("tzAll").onclick=()=>{ setAll(filters.tz, TZ_OPTIONS); initFilters(); render(); };
+  document.getElementById("tzNone").onclick=()=>{ setNone(filters.tz); initFilters(); render(); };
+
+  document.getElementById("papAll").onclick=()=>{ setAll(filters.papers, PAPER_OPTIONS); initFilters(); render(); };
+  document.getElementById("papNone").onclick=()=>{ setNone(filters.papers); initFilters(); render(); };
+}
+
+/* ===== Sort blocks FIXED (always drops) + animated sliding (FLIP) ===== */
+const SORT_OPTIONS = [
+  {k:"available", t:"Available first"},
+  {k:"year", t:"Year"},
+  {k:"subject", t:"Subject"},
+  {k:"session", t:"Session"},
+  {k:"level", t:"Level"},
+  {k:"paper", t:"Paper"},
+  {k:"tz", t:"Timezone"},
+  {k:"missing", t:"Missing first"},
+];
+function loadSortPriority(){
+  try{
+    const v = JSON.parse(localStorage.getItem(sortKey)||"null");
+    if(Array.isArray(v) && v.length) return v;
+  }catch{}
+  return SORT_OPTIONS.map(x=>x.k);
+}
+function saveSortPriority(arr){ localStorage.setItem(sortKey, JSON.stringify(arr)); }
+let sortPriority = loadSortPriority();
+
+function renderSortBlocks(){
+  const box=document.getElementById("sortBlocks");
+  box.innerHTML="";
+  sortPriority.forEach(k=>{
+    const opt=SORT_OPTIONS.find(x=>x.k===k) || {k,t:k};
+    const el=document.createElement("div");
+    el.className="sblock";
+    el.dataset.key=k;
+    el.innerHTML=`<span class="grip">☰</span> ${opt.t}`;
+    box.appendChild(el);
+  });
+
+  const els = () => [...box.querySelectorAll(".sblock")];
+
+  // FLIP helper: animate items smoothly into new positions
+  function flip(before){
+    const after = new Map();
+    els().forEach(el=>after.set(el, el.getBoundingClientRect()));
+    before.forEach((r,el)=>{
+      const a = after.get(el);
+      if(!a) return;
+      const dx = r.left - a.left;
+      const dy = r.top - a.top;
+      if(dx || dy){
+        el.style.transform = `translate(${dx}px,${dy}px)`;
+        el.getBoundingClientRect(); // force
+        el.style.transform = "";
+      }
+    });
+  }
+
+  let dragging=null;
+  let ghost=null;
+  let placeholder=null;
+  let offsetX=0, offsetY=0;
+
+  function makeGhost(fromEl){
+    const r = fromEl.getBoundingClientRect();
+    const g = fromEl.cloneNode(true);
+    g.classList.add("drag-ghost");
+    g.style.width=r.width+"px";
+    g.style.height=r.height+"px";
+    g.style.left=r.left+"px";
+    g.style.top=r.top+"px";
+    return g;
+  }
+  function makePlaceholder(fromEl){
+    const p = fromEl.cloneNode(true);
+    p.classList.add("placeholder");
+    p.style.cursor="default";
+    p.style.opacity="0.55";
+    return p;
+  }
+  function setGhostPos(x,y){
+    if(!ghost) return;
+    ghost.style.left=(x-offsetX)+"px";
+    ghost.style.top =(y-offsetY)+"px";
+  }
+
+  function findInsertIndex(x,y){
+    const items = els().filter(el=>el!==placeholder);
+    for(let i=0;i<items.length;i++){
+      const r=items[i].getBoundingClientRect();
+      const sameRow = y >= r.top-10 && y <= r.bottom+10;
+      const mid = r.left + r.width/2;
+      if(sameRow && x < mid) return i;
+    }
+    return items.length;
+  }
+
+  function onPointerMove(e){
+    if(!dragging) return;
+    setGhostPos(e.clientX, e.clientY);
+
+    const before = new Map();
+    els().forEach(el=>before.set(el, el.getBoundingClientRect()));
+
+    const idx = findInsertIndex(e.clientX, e.clientY);
+    const items = els().filter(el=>el!==placeholder);
+    const ref = items[idx] || null;
+
+    if(ref){
+      const phIdx = [...box.children].indexOf(placeholder);
+      const refIdx = [...box.children].indexOf(ref);
+      if(refIdx < phIdx) box.insertBefore(placeholder, ref);
+      else box.insertBefore(placeholder, ref.nextSibling);
+    }else{
+      box.appendChild(placeholder);
+    }
+
+    flip(before);
+  }
+
+  function onPointerUp(){
+    if(!dragging) return;
+
+    window.removeEventListener("pointermove", onPointerMove, true);
+    window.removeEventListener("pointerup", onPointerUp, true);
+
+    ghost?.remove();
+    ghost=null;
+
+    const real = dragging;
+    const before = new Map();
+    els().forEach(el=>before.set(el, el.getBoundingClientRect()));
+
+    box.replaceChild(real, placeholder);
+    placeholder=null;
+
+    // update order + rerender
+    sortPriority = els().map(el=>el.dataset.key);
+    saveSortPriority(sortPriority);
+
+    flip(before);
+
+    dragging=null;
+    renderSortBlocks();
+    render();
+  }
+
+  els().forEach(el=>{
+    el.addEventListener("pointerdown",(e)=>{
+      if(e.button!==0) return;
+      e.preventDefault();
+
+      // start drag
+      dragging = el;
+      const r = el.getBoundingClientRect();
+      offsetX = e.clientX - r.left;
+      offsetY = e.clientY - r.top;
+
+      ghost = makeGhost(el);
+      document.body.appendChild(ghost);
+      setGhostPos(e.clientX, e.clientY);
+
+      placeholder = makePlaceholder(el);
+
+      const before = new Map();
+      els().forEach(x=>before.set(x, x.getBoundingClientRect()));
+
+      box.replaceChild(placeholder, el);
+
+      flip(before);
+
+      // global listeners so drop ALWAYS works
+      window.addEventListener("pointermove", onPointerMove, true);
+      window.addEventListener("pointerup", onPointerUp, true);
+    });
+  });
+}
+renderSortBlocks();
+
+/* ===== Sorting engine ===== */
+function paperRank(p){
+  const order=["P1","P1a","P1b","P2","P3"];
+  const i=order.indexOf(p);
+  return i<0?99:i;
+}
+function sessionRank(s){ return s==="Nov" ? 1 : 0; }
+function compareRows(A,B){
+  for(const key of sortPriority){
+    switch(key){
+      case "missing":
+        if(A.missing!==B.missing) return (B.missing?1:0)-(A.missing?1:0);
+        break;
+      case "available":
+        if(A.available!==B.available) return (B.available?1:0)-(A.available?1:0);
+        break;
+      case "year":
+        if(A.meta.year!==B.meta.year) return B.meta.year - A.meta.year;
+        break;
+      case "session":
+        if(A.meta.session!==B.meta.session) return sessionRank(B.meta.session)-sessionRank(A.meta.session);
+        break;
+      case "subject":{
+        const an = `${A.meta.subjectName} (${A.meta.subjectCode})`;
+        const bn = `${B.meta.subjectName} (${B.meta.subjectCode})`;
+        const c = an.localeCompare(bn);
+        if(c) return c;
+        break;
+      }
+      case "level":
+        if(A.meta.level!==B.meta.level) return (A.meta.level==="HL"?-1:1);
+        break;
+      case "tz":
+        if(A.meta.tz!==B.meta.tz) return (+A.meta.tz) - (+B.meta.tz);
+        break;
+      case "paper":{
+        const c = paperRank(A.meta.paperLabel) - paperRank(B.meta.paperLabel);
+        if(c) return c;
+        break;
+      }
+    }
+  }
+  return A.id.localeCompare(B.id);
+}
+
+/* ===== Render table ===== */
+const tbody=document.querySelector("#tbl tbody");
+function render(){
+  const search=document.getElementById("search").value.toLowerCase();
+  tbody.innerHTML="";
+  if(!currentFiles.length) return;
+
+  const parsed=currentFiles.map(f=>({meta:parseMeta(f.name), file:f})).filter(x=>x.meta);
+  const mapQP=new Map();
+  const mapMS=new Map();
+  parsed.forEach(x=>{
+    const id=baseId(x.meta);
+    if(x.meta.isMS) mapMS.set(id,x);
+    else mapQP.set(id,x);
+  });
+
+  const expected=generateExpected();
+  let rows=[];
+  for(const meta of expected){
+    const id=baseId(meta);
+    const qp=mapQP.get(id);
+    const ms=mapMS.get(id);
+    const hasQP=!!qp;
+    const hasMS=!!ms;
+
+    const p=getProg(id);
+    const status=p.status;
+    const isDone=status==="done";
+    const missing=(!hasQP || !hasMS);
+    const available=(hasQP && hasMS);
+
+    if(!passesFilters(meta, status, hasQP, hasMS)) continue;
+
+    const searchTarget=(
+      `${meta.subjectCode} ${meta.subjectName} ${meta.year} ${meta.session} ${meta.level} `+
+      `${meta.paperLabel} tz${meta.tz} ${qp?.file.name??""} ${ms?.file.name??""} ${p.notes??""}`
+    ).toLowerCase();
+    if(search && !searchTarget.includes(search)) continue;
+
+    const rowClass=(isDone ? "doneRow" : colour(meta.level, meta.session)) + (missing && !isDone ? " missingRow" : "");
+    const qpHtml=hasQP ? (()=>{ const url=getUrl(qp.file); return `<a href="#" class="dlLink" data-kind="qp" data-preview="${url}">${qp.file.name}</a>`; })()
+                      : `<span class="missTxt">Missing</span>`;
+    const msHtml=hasMS ? (()=>{ const url=getUrl(ms.file); return `<a href="#" class="dlLink" data-kind="ms" data-preview="${url}">${ms.file.name}</a>`; })()
+                      : `<span class="missTxt">Missing</span>`;
+
+    const stamp = (status==="done" && p.completedAt) ? fmtDoneStamp(p.completedAt) : "";
+
+    rows.push({meta,id,missing,available,qpFile:qp?.file||null,msFile:ms?.file||null,rowClass, status, stamp, qpHtml, msHtml});
+  }
+
+  rows.sort(compareRows);
+
+  const grouped={};
+  for(const r of rows){
+    if(!grouped[r.meta.year]) grouped[r.meta.year]=[];
+    grouped[r.meta.year].push(r);
+  }
+
+  Object.keys(grouped).sort((a,b)=>b-a).forEach(year=>{
+    const head=document.createElement("tr");
+    head.innerHTML=`<td colspan="9" class="yearhead">${year}</td>`;
+    tbody.appendChild(head);
+
+    grouped[year].forEach(r=>{
+      const tr=document.createElement("tr");
+      tr.className=r.rowClass;
+      tr.innerHTML=`
+        <td class="compact">${r.meta.year}</td>
+        <td class="compact">${r.meta.session}</td>
+        <td class="compact">${r.meta.subjectName} <span class="small">(${r.meta.subjectCode})</span></td>
+        <td class="compact">${r.meta.level}</td>
+        <td class="compact">${r.meta.tz}</td>
+        <td class="compact"><span class="pill ${paperClass(r.meta.paperLabel)}">${r.meta.paperLabel}</span></td>
+        <td>${r.qpHtml}</td>
+        <td>${r.msHtml}</td>
+        <td class="progCell">
+          <div class="progStack">
+            <div class="statRail">
+              <button class="statBtn ${r.status==="todo"?"active":""}" data-stat="todo" title="Not started">⭘</button>
+              <button class="statBtn ${r.status==="doing"?"active":""}" data-stat="doing" title="In progress">◑</button>
+              <button class="statBtn ${r.status==="done"?"active":""}" data-stat="done" title="Done">●</button>
+            </div>
+            <button class="notesBtn">Notes</button>
+            <div class="doneStamp">${r.stamp ? `Done ${r.stamp}` : ""}</div>
+          </div>
+        </td>
+      `;
+
+      // instant close if mouse leaves the row
+      tr.addEventListener("mouseleave", (e)=>{
+  const pane = document.getElementById("previewPane");
+
+  // If the mouse is leaving the row *into the preview pane*, do NOT close.
+  if (e.relatedTarget && pane.contains(e.relatedTarget)) return;
+
+  // Otherwise close immediately.
+  hidePreviewImmediate();
+});
+
+
+      // status change
+      tr.querySelectorAll(".statBtn").forEach(btn=>{
+        btn.onclick=()=>{
+          const next=btn.dataset.stat;
+          const cur=getProg(r.id);
+          if(next==="done"){
+            setProg(r.id, {status:"done", completedAt: cur.completedAt || nowIsoMinute()});
+          }else{
+            setProg(r.id, {status:next, completedAt:null});
+          }
+          render();
+        };
+      });
+
+      // notes
+      tr.querySelector(".notesBtn").onclick=(e)=>{
+        e.preventDefault();
+        openNotePopover(tr.querySelector(".notesBtn"), r.id);
+      };
+
+      // links: hover preview + click download
+      tr.querySelectorAll("a.dlLink").forEach(a=>{
+        a.addEventListener("mouseenter", ()=>{
+          showPreview(a.dataset.preview, tr); // instant switch, cancels hide
+        });
+        a.addEventListener("mouseleave", hidePreviewSoon);
+        a.addEventListener("click",(e)=>{
+          e.preventDefault();
+          if(a.dataset.kind==="qp" && r.qpFile) downloadFile(r.qpFile);
+          if(a.dataset.kind==="ms" && r.msFile) downloadFile(r.msFile);
+        });
+      });
+
+      tbody.appendChild(tr);
+    });
+  });
+}
+
+/* ===== Export / import ===== */
+function downloadJson(filename, obj){
+  const blob=new Blob([JSON.stringify(obj,null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url; a.download=filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 500);
+}
+function importJsonFromFile(inputEl, onObj){
+  inputEl.onchange=()=>{
+    const file=inputEl.files?.[0];
+    if(!file) return;
+    const reader=new FileReader();
+    reader.onload=()=>{
+      try{ onObj(JSON.parse(String(reader.result||""))); }
+      catch(e){ alert("Import failed: "+e.message); }
+      finally{ inputEl.value=""; }
+    };
+    reader.readAsText(file);
+  };
+}
+document.getElementById("downloadProgress").onclick=()=>downloadJson("ib_progress.json", progress);
+document.getElementById("importProgressFile").onclick=()=>document.getElementById("progressFile").click();
+document.getElementById("resetProgress").onclick=()=>{
+  if(!confirm("Reset all saved progress?")) return;
+  localStorage.removeItem(progressKey);
+  progress={};
+  render();
+};
+importJsonFromFile(document.getElementById("progressFile"), (obj)=>{
+  if(typeof obj!=="object" || Array.isArray(obj) || obj===null) throw new Error("Progress JSON must be an object");
+  progress=obj;
+  localStorage.setItem(progressKey, JSON.stringify(progress));
+  render();
+});
+
+document.getElementById("downloadRules").onclick=()=>downloadJson("ib_rules.json", rules);
+document.getElementById("importRulesFile").onclick=()=>document.getElementById("rulesFile").click();
+importJsonFromFile(document.getElementById("rulesFile"), (obj)=>{
+  if(!Array.isArray(obj)) throw new Error("Rules JSON must be an array");
+  rules=sanitizeRules(obj);
+  saveRules();
+  document.getElementById("rulesJson").value=JSON.stringify(rules,null,2);
+  render();
+});
+
+/* ===== Rules UI minimal (keep your current layout; works) ===== */
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[c]));
+}
+function ruleToText(r){
+  if(r.type==="disable"){
+    const parts=["Disable"];
+    if(r.subjects?.length) parts.push(`subjects=${r.subjects.join(",")}`);
+    if(r.years?.length) parts.push(`years=${r.years.join(",")}`);
+    if(r.papers?.length) parts.push(`papers=${r.papers.join(",")}`);
+    if(r.sessions?.length) parts.push(`sessions=${r.sessions.join(",")}`);
+    if(r.levels?.length) parts.push(`levels=${r.levels.join(",")}`);
+    if(r.tz?.length) parts.push(`tz=${r.tz.join(",")}`);
+    if(parts.length===1) parts.push("(any)");
+    return parts.join(" ");
+  }
+  if(r.type==="enableP1ab"){
+    const parts=["Enable P1a/P1b"];
+    if(r.subjects?.length) parts.push(`subjects=${r.subjects.join(",")}`);
+    if(r.years?.length) parts.push(`years=${r.years.join(",")}`);
+    return parts.join(" ");
+  }
+  return JSON.stringify(r);
+}
+function setChecklistState(containerId, setRef, mode){
+  const el=document.getElementById(containerId);
+  const boxes=[...el.querySelectorAll('input[type="checkbox"][data-val]')];
+  if(mode==="all"){
+    boxes.forEach(b=>{ b.checked=true; setRef.add(b.dataset.val); });
+  }else{
+    boxes.forEach(b=>{ b.checked=false; });
+    setRef.clear();
+  }
+}
+function initRulesUI(){
+  const sel={subjects:new Set(),years:new Set(),papers:new Set(),sessions:new Set(),levels:new Set(),tz:new Set()};
+
+  makeChecklist("ruleSubjects", SUBJECTS.map(s=>s.code), sel.subjects, (opt,checked)=>{ checked?sel.subjects.add(opt):sel.subjects.delete(opt); }, code=>{
+    const s=SUBJECTS.find(x=>x.code===code);
+    return `${s ? s.name : code} (${code})`;
+  });
+  makeChecklist("ruleYears", expectedYears, sel.years, (opt,checked)=>{ checked?sel.years.add(String(opt)):sel.years.delete(String(opt)); }, y=>String(y));
+  makeChecklist("rulePapers", PAPER_OPTIONS, sel.papers, (opt,checked)=>{ checked?sel.papers.add(opt):sel.papers.delete(opt); });
+  makeChecklist("ruleLevels", LEVEL_OPTIONS, sel.levels, (opt,checked)=>{ checked?sel.levels.add(opt):sel.levels.delete(opt); });
+  makeChecklist("ruleTZ", ["1","2","3"], sel.tz, (opt,checked)=>{ checked?sel.tz.add(opt):sel.tz.delete(opt); }, x=>`TZ ${x}`);
+  makeChecklist("ruleSessions", ["M","N"], sel.sessions, (opt,checked)=>{ checked?sel.sessions.add(opt):sel.sessions.delete(opt); }, opt=>opt==="M"?"May":"Nov");
+
+  document.getElementById("rsAll").onclick=()=>setChecklistState("ruleSubjects", sel.subjects, "all");
+  document.getElementById("rsNone").onclick=()=>setChecklistState("ruleSubjects", sel.subjects, "none");
+  document.getElementById("ryAll").onclick=()=>setChecklistState("ruleYears", sel.years, "all");
+  document.getElementById("ryNone").onclick=()=>setChecklistState("ruleYears", sel.years, "none");
+  document.getElementById("rpAll").onclick=()=>setChecklistState("rulePapers", sel.papers, "all");
+  document.getElementById("rpNone").onclick=()=>setChecklistState("rulePapers", sel.papers, "none");
+
+  function refreshRulesList(){
+    const el=document.getElementById("rulesList");
+    el.innerHTML="";
+    rules.forEach((r,idx)=>{
+      const div=document.createElement("div");
+      div.className="item";
+      div.style.justifyContent="space-between";
+      div.innerHTML=`
+        <span class="small">${escapeHtml(ruleToText(r))}</span>
+        <button data-i="${idx}" class="btnGhost" style="padding:6px 10px;border-radius:12px">Remove</button>
+      `;
+      div.querySelector("button").onclick=(e)=>{
+        const i=+e.target.dataset.i;
+        rules.splice(i,1);
+        rules=sanitizeRules(rules);
+        saveRules();
+        refreshRulesList();
+        document.getElementById("rulesJson").value=JSON.stringify(rules,null,2);
+        render();
+      };
+      el.appendChild(div);
+    });
+  }
+
+  function updateJsonBox(){ document.getElementById("rulesJson").value=JSON.stringify(rules,null,2); }
+  document.getElementById("updateRulesJson").onclick=updateJsonBox;
+
+  document.getElementById("addRule").onclick=()=>{
+    const type=document.getElementById("ruleType").value;
+    const years=[...sel.years].map(Number);
+
+    if(type==="disable"){
+      const rule={type:"disable"};
+      if(sel.subjects.size) rule.subjects=[...sel.subjects];
+      if(years.length) rule.years=years;
+      if(sel.papers.size) rule.papers=[...sel.papers];
+      if(sel.sessions.size) rule.sessions=[...sel.sessions];
+      if(sel.levels.size) rule.levels=[...sel.levels];
+      if(sel.tz.size) rule.tz=[...sel.tz];
+      rules.push(rule);
+    }else{
+      const rule={type:"enableP1ab"};
+      if(sel.subjects.size) rule.subjects=[...sel.subjects];
+      if(years.length) rule.years=years;
+      rules.push(rule);
+    }
+
+    rules=sanitizeRules(rules);
+    saveRules();
+    refreshRulesList();
+    updateJsonBox();
+    render();
+  };
+
+  document.getElementById("clearRules").onclick=()=>{
+    if(!confirm("Clear all rules?")) return;
+    rules=[];
+    saveRules();
+    refreshRulesList();
+    updateJsonBox();
+    render();
+  };
+
+  document.getElementById("clearRuleConfig").onclick=()=>{
+    setChecklistState("ruleSubjects", sel.subjects, "none");
+    setChecklistState("ruleYears", sel.years, "none");
+    setChecklistState("rulePapers", sel.papers, "none");
+    setChecklistState("ruleLevels", sel.levels, "none");
+    setChecklistState("ruleTZ", sel.tz, "none");
+    setChecklistState("ruleSessions", sel.sessions, "none");
+  };
+
+  document.getElementById("selectAllRuleConfig").onclick=()=>{
+    setChecklistState("ruleSubjects", sel.subjects, "all");
+    setChecklistState("ruleYears", sel.years, "all");
+    setChecklistState("rulePapers", sel.papers, "all");
+    setChecklistState("ruleLevels", sel.levels, "all");
+    setChecklistState("ruleTZ", sel.tz, "all");
+    setChecklistState("ruleSessions", sel.sessions, "all");
+  };
+
+  refreshRulesList();
+  updateJsonBox();
+}
+
+/* ===== Search ===== */
+document.getElementById("search").oninput=render;
+
+/* ===== Init ===== */
+initFilters();
+initRulesUI();
+render();
+
+});
+</script>
+</body>
+</html>
