@@ -1,0 +1,6 @@
+﻿node_modules/
+dist/
+desktop.ini
+**/desktop.ini
+*.log
+.DS_Store
