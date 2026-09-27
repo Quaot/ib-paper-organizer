@@ -44,7 +44,7 @@ npm run dist:win
 ## Version history
 
 - **v2.1.2** (September 2026) Electron desktop app, recursive folder scan, remembered folder, paper and mark scheme pairing, save a copy.
-- **v1** (December 2025) Single HTML page, manual file picker, no persistence. Kept in `prototype/`.
+- **v1** (2024) Single HTML page, manual file picker, no persistence. Kept in `prototype/`.
 
 ## Built with
 
